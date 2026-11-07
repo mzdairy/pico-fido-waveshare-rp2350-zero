@@ -34,6 +34,7 @@
 #include "crypto_utils.h"
 #include "apdu.h"
 #include "object_authorization.h"
+#include "led/led.h"
 
 uint32_t usage_timer = 0, initial_usage_time_limit = 0;
 uint32_t max_usage_time_period  = 600 * 1000;
@@ -918,6 +919,19 @@ err:
     CBOR_FREE_BYTE_STRING(kay);
     CBOR_FREE_BYTE_STRING(rpId);
     mbedtls_platform_zeroize(keydev, sizeof(keydev));
+    // This is a host-PIN-preparation hint, NOT detection of a desktop window.
+    // Only use the already-computed result; never inspect/log PIN material or
+    // change retries, crypto, permissions, responses or authentication flow.
+    if (error == CborNoError && (subcommand == 0x1 || subcommand == 0x2) && file_has_data(ef_pin)) {
+        led_pin_hint_begin();
+    }
+    else if ((subcommand == 0x4 || subcommand == 0x5 || subcommand == 0x9) &&
+             (error == CTAP2_ERR_PIN_INVALID || error == CTAP2_ERR_PIN_AUTH_INVALID)) {
+        led_pin_hint_begin();
+    }
+    else if (subcommand != 0x1 && subcommand != 0x2) {
+        led_pin_hint_cancel();
+    }
     if (error != CborNoError) {
         if (error == CborErrorImproperValue) {
             return CTAP2_ERR_CBOR_UNEXPECTED_TYPE;

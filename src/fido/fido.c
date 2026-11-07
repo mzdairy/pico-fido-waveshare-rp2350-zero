@@ -565,7 +565,7 @@ bool check_user_presence(void) {
 
 void fido_led_3_blinks(void) {
 #ifndef ENABLE_EMULATION
-    led_blink_n_times(3, LED_COLOR_GREEN, 100, 100);
+    led_blink_n_times(3, LED_COLOR_RED, 100, 100);
 #endif
 }
 

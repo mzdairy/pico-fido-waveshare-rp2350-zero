@@ -16,6 +16,7 @@
  */
 
 #include "picokeys.h"
+#include "led/led.h"
 #if defined(PICO_PLATFORM)
 #include "pico/stdlib.h"
 #endif
@@ -54,19 +55,30 @@ int cbor_parse(uint8_t cmd, const uint8_t *data, size_t len) {
                 reset_gna_state();
             }
             if (data[0] == CTAP_MAKE_CREDENTIAL) {
-                return cbor_make_credential(data + 1, len - 1);
+                led_pin_hint_cancel();
+                int result = cbor_make_credential(data + 1, len - 1);
+                if (result == CTAP2_ERR_PUAT_REQUIRED) {
+                    led_pin_hint_begin();
+                }
+                return result;
             }
             if (data[0] == CTAP_GET_INFO) {
                 return cbor_get_info();
             }
             else if (data[0] == CTAP_RESET) {
+                led_pin_hint_cancel();
                 return cbor_reset();
             }
             else if (data[0] == CTAP_CLIENT_PIN) {
                 return cbor_client_pin(data + 1, len - 1);
             }
             else if (data[0] == CTAP_GET_ASSERTION) {
-                return cbor_get_assertion(data + 1, len - 1, false);
+                led_pin_hint_cancel();
+                int result = cbor_get_assertion(data + 1, len - 1, false);
+                if (result == CTAP2_ERR_PUAT_REQUIRED) {
+                    led_pin_hint_begin();
+                }
+                return result;
             }
             else if (data[0] == CTAP_GET_NEXT_ASSERTION) {
                 return cbor_get_next_assertion(data + 1, len - 1);
