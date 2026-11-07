@@ -1,4 +1,10 @@
 # Pico FIDO
+
+> **Waveshare RP2350-Zero：r13 最终版**  
+> 本分支包含定制 FIDO2 源码及固件，并非上游官方发布版本。  
+> **[中文说明、灯效与刷写步骤](R13-WAVESHARE.md)** · **[下载 UF2 固件](firmware/pico_fido_zero_fido2_v8.0_FINAL-r13.uf2)**  
+> 下载时请打开固件文件页面，选择 **Download raw file**。适用型号是 **RP2350-Zero**，不是 RP3250。
+
 This project transforms your Raspberry Pi Pico or ESP32 microcontroller into an integrated FIDO Passkey, functioning like a standard USB Passkey for authentication.
 
 If you are looking for a OpenPGP + Fido, see: https://github.com/polhenarejos/pico-fido2. Available through [PicoKey App](https://www.picokeys.com/picokeyapp/ "PicoKey App").
