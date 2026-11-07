@@ -5,6 +5,25 @@
 > **[中文说明、灯效与刷写步骤](R13-WAVESHARE.md)** · **[下载 UF2 固件](firmware/pico_fido_zero_fido2_v8.0_FINAL-r13.uf2)**  
 > 下载时请打开固件文件页面，选择 **Download raw file**。适用型号是 **RP2350-Zero**，不是 RP3250。
 
+## 已使用的 FIDO2 密钥能否复制到另一块硬件？
+
+**不能通过把同一个 UF2 固件刷到另一块板来复制已注册的密钥。** UF2 是程序，不包含首次使用后生成的账号私钥。第二块板刷入相同固件后，仍需单独注册或使用受支持的迁移机制。
+
+- 标准 FIDO2/WebAuthn 接口通常不提供读取或导出私钥的功能。
+- 上游项目声明支持通过 Pico Vault 进行经过认证的 Passkey 导出和导入，但这里**尚未验证 r13 构建的实际导入导出能力、适用凭据类型以及跨设备兼容性**。不能将上游功能列表视作本定制构建的迁移保证。
+- 直接复制 Flash 也不保证可用：密钥保护可能依赖芯片唯一信息或 OTP 中的秘密。不要为了克隆而尝试复制、烧写或修改 OTP，也不要将 Flash 镜像当作已经验证的备份。
+
+### 推荐的备用方案
+
+1. 准备第二块安全密钥，在每个网站的安全设置中，将其作为**另一把安全密钥或 Passkey**单独添加。
+2. 两块硬件使用不同私钥，但都可以登录同一个账号；这是备用登录方式，不是克隆。
+3. 保存网站提供的恢复码，并保留其他可靠的恢复方式。如果网站限制绑定数量，先核实替代恢复方案。
+4. 实际测试第二把密钥能够独立登录，再考虑调整原有验证方式。**不要在验证前重置第一块硬件，也不要删除账号上原有的密钥绑定。**
+
+若将来使用导出功能，导出文件可能包含敏感凭据，需加密、离线妥善保管，不能上传到公开仓库或粘贴到聊天中。
+
+---
+
 This project transforms your Raspberry Pi Pico or ESP32 microcontroller into an integrated FIDO Passkey, functioning like a standard USB Passkey for authentication.
 
 If you are looking for a OpenPGP + Fido, see: https://github.com/polhenarejos/pico-fido2. Available through [PicoKey App](https://www.picokeys.com/picokeyapp/ "PicoKey App").
